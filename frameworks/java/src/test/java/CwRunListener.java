@@ -34,6 +34,8 @@ public class CwRunListener extends RunListener
         if(!failed)
         {
             System.out.println("\n<PASSED::>Test Passed");
+            Points points = description.getAnnotation(Points.class);
+            System.out.println(String.format("\n<POINTS::>%d", points.value()));
         }
         System.out.println("\n<COMPLETEDIN::>");
     }
