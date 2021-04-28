@@ -8,43 +8,19 @@ FROM codewars/base-runner
 RUN apt-get -y install software-properties-common
 
 # Install Java 8
-# RUN apt-get install -y default-jre-headless default-jdk # default is OpenJDK6
-RUN add-apt-repository ppa:webupd8team/java
-RUN apt-get update
-# http://askubuntu.com/a/190674
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
-
-RUN apt-get install -y unzip
+RUN apt-get -y install openjdk-8-jdk
 
 # Install dependencies binaries
 RUN mkdir -p /usr/local
 WORKDIR /usr/local
 
-# Checkout binaries
-RUN  wget -q https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.10.zip && unzip apache-groovy-binary-2.4.10.zip
-
-# Setup Groovy
-RUN mv groovy-2.4.10 groovy
-ENV GROOVY_HOME /usr/local/groovy/
-ENV PATH /usr/local/groovy/bin:${PATH}
-
-# Install zip utils
-RUN apt-get install -y zip unzip --no-install-recommends
-
 # Install Gradle
 ENV GRADLE_HOME /usr/local/gradle
-ENV GRADLE_VERSION 4.0
+ENV GRADLE_VERSION 6.0
 
-ARG GRADLE_DOWNLOAD_SHA256=56bd2dde29ba2a93903c557da1745cafd72cdd8b6b0b83c05a40ed7896b79dfe
 RUN set -o errexit -o nounset \
 	&& echo "Downloading Gradle" \
 	&& wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
-	\
-	&& echo "Checking download hash" \
-	&& echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum --check - \
-	\
 	&& echo "Installing Gradle" \
 	&& unzip gradle.zip \
 	&& rm gradle.zip \
